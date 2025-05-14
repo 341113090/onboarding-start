@@ -32,9 +32,9 @@ module spi_peripheral (
     reg [2:0] SCLK_sync;
 
     // keep track of transaction
-    reg selected <= 1'b0;
-    reg valid_action <= 1'b0;
-    reg transaction_ready <= 1'b0;
+    reg selected;
+    reg valid_action;
+    reg transaction_ready;
 
     // for actual payload
     reg [5:0] clock_counter;
