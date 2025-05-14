@@ -1,12 +1,13 @@
-# info.yaml  
-title: "ASIC Onboarding Project - Nathan Thian"  
-author: "Nathan Thian"  
-description: "SPI-controlled PWM peripheral for Tiny Tapeout."  
-top_module: "tt_um_uwasic_onboarding_nathan_thian"  # Match your top module name  
-source_files:  
-  - spi_peripheral.v
-  - pwm_peripheral.v  
-  - project.v
+project:
+  # info.yaml  
+  title: "ASIC Onboarding Project - Nathan Thian"  
+  author: "Nathan Thian"  
+  description: "SPI-controlled PWM peripheral for Tiny Tapeout."  
+  top_module: "tt_um_uwasic_onboarding_nathan_thian"  # Match your top module name  
+  source_files:  
+    - spi_peripheral.v
+    - pwm_peripheral.v  
+    - project.v
 
 # NOT REQUIRED
 pinout:
