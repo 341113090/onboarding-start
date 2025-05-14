@@ -3,7 +3,7 @@
 module spi_peripheral (
     input  wire       clk,      // clock
     input  wire       rst_n,     // reset_n - low to reset
-    input wire [7:0] ui_in // nCS [2] COPI [1] SCLK [0]
+    input wire [7:0] ui_in, // nCS [2] COPI [1] SCLK [0]
     output reg [7:0] en_reg_out_7_0,
     output reg [7:0] en_reg_out_15_8,
     output reg [7:0] en_reg_pwm_7_0,
@@ -80,7 +80,7 @@ module spi_peripheral (
                     clock_counter <= 5'b000000;
                 end
                 // else will execute if the SPI is selected and detects a rising edge
-            end else if(selected and SCLK_sync[1:0]==rising_edge) begin
+            end else if(selected and (SCLK_sync[1:0]==rising_edge)) begin
                 // if the action is valid, keep track of data
                 if valid_action begin
                     if(clock_counter < address_limit) begin
