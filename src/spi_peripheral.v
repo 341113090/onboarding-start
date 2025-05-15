@@ -60,7 +60,7 @@ module spi_peripheral (
             SCLK_sync <= {SCLK_sync[1:0], SCLK};
 
             // if the SPI has just been selected and it was not selected before
-            if (!selected and nCS_sync == 3'b110) begin
+            if (!selected && nCS_sync == 3'b110) begin
                 // indicate seelction
                 selected <= 1'b1;
 
@@ -74,7 +74,7 @@ module spi_peripheral (
                     clock_counter <= 5'b000000;
                 end
                 // else will execute if the SPI is selected and detects a rising edge
-            end else if(selected and (SCLK_sync[1:0]==2'b01)) begin
+            end else if(selected && (SCLK_sync[1:0]==2'b01)) begin
                 // if the action is valid, keep track of data
                 if valid_action begin
                     if(clock_counter < address_limit) begin
