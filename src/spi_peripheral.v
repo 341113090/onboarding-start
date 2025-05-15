@@ -38,7 +38,6 @@ module spi_peripheral (
     always @(posedge clk or negedge rst_n) begin
         
         if (!rst_n) begin
-            out <= 0;
             selected <= 1'b0;
             valid_action <= 1'b0;
             transaction_ready <= 1'b0;
