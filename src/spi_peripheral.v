@@ -76,7 +76,7 @@ module spi_peripheral (
                 // else will execute if the SPI is selected and detects a rising edge
             end else if(selected && (SCLK_sync[1:0]==2'b01)) begin
                 // if the action is valid, keep track of data
-                if valid_action begin
+                if (valid_action) begin
                     if(clock_counter < address_limit) begin
                         address <= {address[6:1],COPI_sync[0]};
                     end else begin
@@ -92,7 +92,7 @@ module spi_peripheral (
                     clock_counter <= 5'b00000;
                 end
             end else if(transaction_ready) begin
-                if valid_action begin
+                if (valid_action) begin
                     case(address)
                         6'b000000: en_reg_out_7_0[7:0] <= payload[7:0];
                         6'b000001: en_reg_out_15_8[7:0] <= payload[7:0];
