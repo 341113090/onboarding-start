@@ -44,9 +44,9 @@ module spi_peripheral (
             nCS_sync <= 3'b000;
             COPI_sync <= 3'b000;
             SCLK_sync <= 3'b000;
-            clock_counter <= 5'b000000;
+            clock_counter <= 5'b00000;
             payload <= 7'b0000000;
-            address <=6'b000000;
+            address <= 6'b000000;
             en_reg_out_7_0 <= 8'b00000000;
             en_reg_out_15_8 <= 8'b00000000;
             en_reg_pwm_7_0 <= 8'b00000000;
