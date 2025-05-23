@@ -17,8 +17,10 @@ module tt_um_uwasic_onboarding_nathan_thian(
 
   // Add this inside the module block
   assign uio_oe = 8'hFF; // Set all IOs to output
-  // assign uo_out  = ui_in + uio_in;  // Example: ou_out is the sum of ui_in and uio_in
-  // assign uio_out = 0;
+  
+  wire SCLK = ui_in[0];
+  wire COPI = ui_in[1];
+  wire nCS = ui_in[2];
   
   // Create wires to refer to the values of the registers
   wire [7:0] en_reg_out_7_0;
@@ -42,7 +44,9 @@ module tt_um_uwasic_onboarding_nathan_thian(
   spi_peripheral spi_peripheral_inst(
     .clk(clk),
     .rst_n(rst_n),
-    .ui_in(ui_in),
+    .SCLK(SCLK),
+    .COPI(COPI),
+    .nCS(nCS),
     .en_reg_out_7_0(en_reg_out_7_0),
     .en_reg_out_15_8(en_reg_out_15_8),
     .en_reg_pwm_7_0(en_reg_pwm_7_0),

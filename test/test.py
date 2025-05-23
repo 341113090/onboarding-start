@@ -149,13 +149,219 @@ async def test_spi(dut):
 
     dut._log.info("SPI test completed successfully")
 
+def time_out_check(old_clock):
+    clock = cocotb.utils.get_sim_time(units = "ns")
+    # print(f"Diff: {clock - old_clock}")
+    if((clock - old_clock) > 20000000):
+        return 1
+    else:
+        return 0
+
 @cocotb.test()
 async def test_pwm_freq(dut):
     # Write your test here
+    dut._log.info("Start WPM frequency test")
+
+    # Set the clock period to 100 ns (10 MHz)
+    clock = Clock(dut.clk, 100, units="ns")
+    cocotb.start_soon(clock.start())
+
+    # Reset
+    dut._log.info("Reset")
+    dut.ena.value = 1
+    ncs = 1
+    bit = 0
+    sclk = 0
+    dut.ui_in.value = ui_in_logicarray(ncs, bit, sclk)
+    dut.rst_n.value = 0
+    await ClockCycles(dut.clk, 5)
+    dut.rst_n.value = 1
+    await ClockCycles(dut.clk, 5)
+
+    # send SPI transaction
+    dut._log.info("Sending SPI transaction")
+    ui_in_val = await send_spi_transaction(dut, 1, 0x00, 0x01)
+    ui_in_val = await send_spi_transaction(dut, 1, 0x02, 0x01)
+    ui_in_val = await send_spi_transaction(dut,1,0x04,0x0F)
+    
+    new_clock = cocotb.utils.get_sim_time(units = "ns")
+    while(int(dut.uo_out.value) != 1):
+        curr_clock = cocotb.utils.get_sim_time(units = "ns")
+        print(curr_clock - new_clock)
+        if(curr_clock - new_clock > 400000):
+            print("Timed out")
+            return
+        await ClockCycles(dut.clk, 1)
+    new_clock = cocotb.utils.get_sim_time(units = "ns")
+    while(int(dut.uo_out.value) != 0):
+        curr_clock = cocotb.utils.get_sim_time(units = "ns")
+        if(curr_clock - new_clock > 400000):
+            print("Timed out")
+            return
+        await ClockCycles(dut.clk, 1)
+
+    # actually start test
+    new_clock = cocotb.utils.get_sim_time(units = "ns")
+    start_time = cocotb.utils.get_sim_time(units = "ns")
+    while(int(dut.uo_out.value) != 1):
+        curr_clock = cocotb.utils.get_sim_time(units = "ns")
+        if(curr_clock - new_clock > 400000):
+            print("Timed out")
+            return
+        await ClockCycles(dut.clk, 1)
+    new_clock = cocotb.utils.get_sim_time(units = "ns")
+    while(int(dut.uo_out.value) != 0):
+        curr_clock = cocotb.utils.get_sim_time(units = "ns")
+        if(curr_clock - new_clock > 400000):
+            print("Timed out")
+            return
+        await ClockCycles(dut.clk, 1)
+    end_time = cocotb.utils.get_sim_time(units = "ns")
+    period = (end_time-start_time)*1e-9
+    frequency = 1/period
+    assert (frequency < 3030 and frequency > 2970), f"Expected value between 2970 and 3030 Hz, got {frequency}"
     dut._log.info("PWM Frequency test completed successfully")
+
 
 
 @cocotb.test()
 async def test_pwm_duty(dut):
     # Write your test here
+    dut._log.info("Starting PWM Duty Cycle Test")
+
     dut._log.info("PWM Duty Cycle test completed successfully")
+    # Set the clock period to 100 ns (10 MHz)
+    clock = Clock(dut.clk, 100, units="ns")
+    cocotb.start_soon(clock.start())
+
+    # Reset
+    dut._log.info("Reset")
+    dut.ena.value = 1
+    ncs = 1
+    bit = 0
+    sclk = 0
+    dut.ui_in.value = ui_in_logicarray(ncs, bit, sclk)
+    dut.rst_n.value = 0
+    await ClockCycles(dut.clk, 5)
+    dut.rst_n.value = 1
+    await ClockCycles(dut.clk, 5)
+
+    # send SPI transaction
+    dut._log.info("Measuring Period")
+    ui_in_val = await send_spi_transaction(dut, 1, 0x00, 0x01)
+    ui_in_val = await send_spi_transaction(dut, 1, 0x02, 0x01)
+    ui_in_val = await send_spi_transaction(dut,1,0x04,0x0F)
+    
+    new_clock = cocotb.utils.get_sim_time(units = "ns")
+    while(int(dut.uo_out.value) != 1):
+        curr_clock = cocotb.utils.get_sim_time(units = "ns")
+        print(curr_clock - new_clock)
+        if(curr_clock - new_clock > 400000):
+            print("Timed out")
+            return
+        await ClockCycles(dut.clk, 1)
+    new_clock = cocotb.utils.get_sim_time(units = "ns")
+    while(int(dut.uo_out.value) != 0):
+        curr_clock = cocotb.utils.get_sim_time(units = "ns")
+        if(curr_clock - new_clock > 400000):
+            print("Timed out")
+            return
+        await ClockCycles(dut.clk, 1)
+
+    # actually start test
+    new_clock = cocotb.utils.get_sim_time(units = "ns")
+    start_time = cocotb.utils.get_sim_time(units = "ns")
+    while(int(dut.uo_out.value) != 1):
+        curr_clock = cocotb.utils.get_sim_time(units = "ns")
+        if(curr_clock - new_clock > 400000):
+            print("Timed out")
+            return
+        await ClockCycles(dut.clk, 1)
+    new_clock = cocotb.utils.get_sim_time(units = "ns")
+    while(int(dut.uo_out.value) != 0):
+        curr_clock = cocotb.utils.get_sim_time(units = "ns")
+        if(curr_clock - new_clock > 400000):
+            print("Timed out")
+            return
+        await ClockCycles(dut.clk, 1)
+    end_time = cocotb.utils.get_sim_time(units = "ns")
+    period = (end_time-start_time)*1e-9
+    dut._log.info("Got Period")
+
+    # send SPI transaction
+    dut._log.info("Sending SPI transaction 0%")
+    ui_in_val = await send_spi_transaction(dut, 1, 0x00, 0x01)
+    ui_in_val = await send_spi_transaction(dut, 1, 0x02, 0x01)
+    ui_in_val = await send_spi_transaction(dut,1,0x04,0x00)
+
+    start_time = cocotb.utils.get_sim_time(units = "ns")
+    valid = False
+    while(int(dut.uo_out.value) == 0):
+        curr_clock = cocotb.utils.get_sim_time(units = "ns")
+        if(curr_clock - start_time > period):
+            valid = True
+            break
+        await ClockCycles(dut.clk, 1)
+    assert valid, f"Invalid 0%"
+    dut._log.info("Valid PWM Duty 0%")
+
+    # send SPI transaction
+    dut._log.info("Sending SPI transaction 100%")
+    ui_in_val = await send_spi_transaction(dut, 1, 0x00, 0x01)
+    ui_in_val = await send_spi_transaction(dut, 1, 0x02, 0x01)
+    ui_in_val = await send_spi_transaction(dut,1,0x04,0xFF)
+
+    start_time = cocotb.utils.get_sim_time(units = "ns")
+    while(int(dut.uo_out.value) == 1):
+        curr_clock = cocotb.utils.get_sim_time(units = "ns")
+        if(curr_clock - start_time > period):
+            valid = True
+            break
+        await ClockCycles(dut.clk, 1)
+    assert valid, f"Invalid 100%"
+    dut._log.info("Valid PWM Duty 100%")
+
+    # send SPI transaction
+    dut._log.info("Sending SPI transaction 50%")
+    ui_in_val = await send_spi_transaction(dut, 1, 0x00, 0x01)
+    ui_in_val = await send_spi_transaction(dut, 1, 0x02, 0x01)
+    ui_in_val = await send_spi_transaction(dut,1,0x04,0x80)
+
+    new_clock = cocotb.utils.get_sim_time(units = "ns")
+    while(int(dut.uo_out.value) != 1):
+        curr_clock = cocotb.utils.get_sim_time(units = "ns")
+        print(curr_clock - new_clock)
+        if(curr_clock - new_clock > 400000):
+            print("Timed out")
+            return
+        await ClockCycles(dut.clk, 1)
+    new_clock = cocotb.utils.get_sim_time(units = "ns")
+    while(int(dut.uo_out.value) != 0):
+        curr_clock = cocotb.utils.get_sim_time(units = "ns")
+        if(curr_clock - new_clock > 400000):
+            print("Timed out")
+            return
+        await ClockCycles(dut.clk, 1)
+
+    # actually start test
+    start_clock = cocotb.utils.get_sim_time(units = "ns")
+    new_clock = cocotb.utils.get_sim_time(units = "ns")
+    while(int(dut.uo_out.value) != 1):
+        curr_clock = cocotb.utils.get_sim_time(units = "ns")
+        if(curr_clock - new_clock > 400000):
+            print("Timed out")
+            return
+        await ClockCycles(dut.clk, 1)
+    duty = cocotb.utils.get_sim_time(units = "ns")
+    new_clock = cocotb.utils.get_sim_time(units = "ns")
+    while(int(dut.uo_out.value) != 0):
+        curr_clock = cocotb.utils.get_sim_time(units = "ns")
+        if(curr_clock - new_clock > 400000):
+            print("Timed out")
+            return
+        await ClockCycles(dut.clk, 1)
+    end_time = cocotb.utils.get_sim_time(units = "ns")
+    duty_period = (end_time-duty)*1e-9
+    period = (end_time-start_clock)*1e-9
+    assert (duty_period/period - 0.5) < 0.001, f"Expected 0.5 got {duty_period/period}"
+    dut._log.info("Valid PWM Duty 50%")
